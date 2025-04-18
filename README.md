@@ -1,73 +1,57 @@
-# Welcome to your Lovable project
+# GeoTrack Analytics Dashboard
 
-## Project info
+## Descripción
+Panel de analíticas avanzado para visualización de datos basados en IP de visitantes. Esta aplicación permite visualizar y analizar datos geográficos, patrones de visitas, y comportamiento de usuarios en un sitio web.
 
-**URL**: https://lovable.dev/projects/0bc144c9-f407-48ed-a922-243b616f2090
+## Características
 
-## How can I edit this code?
+### Visualización Geográfica
+- Mapa interactivo global que muestra la distribución de visitantes
+- Filtros por país, región y ciudad
+- Análisis de densidad geográfica de visitantes
 
-There are several ways of editing your application.
+### Análisis de Conexiones
+- Distribución por tipo de conexión (ISP, Corporativa, VPS, Móvil)
+- Identificación de proveedores de internet populares
+- Segmentación especial para conexiones corporativas (potenciales leads B2B)
 
-**Use Lovable**
+### Frecuencia de Visita
+- Visualización de tendencias temporales
+- Análisis de retorno de visitantes
+- Duración media de sesiones
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/0bc144c9-f407-48ed-a922-243b616f2090) and start prompting.
+### Interacción con Contenido
+- Mapas de calor de interacción
+- Análisis de elementos más clickeados
+- Métricas de engagement por página
 
-Changes made via Lovable will be committed automatically to this repo.
+## Tecnologías utilizadas
 
-**Use your preferred IDE**
+- React con Vite
+- TypeScript
+- Tailwind CSS
+- shadcn-ui para componentes de UI
+- Recharts para visualización de datos
+- Mapbox para mapas interactivos
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## Desarrollo local
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+Para ejecutar este proyecto localmente:
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+# Clonar el repositorio
+git clone <URL_DEL_REPOSITORIO>
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+# Navegar al directorio del proyecto
+cd geo-track-analytics
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Instalar dependencias
+npm install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Iniciar el servidor de desarrollo
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+## Configuración de Mapbox
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/0bc144c9-f407-48ed-a922-243b616f2090) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+Este proyecto utiliza Mapbox para la visualización de mapas. Por defecto, usa un token de demostración con limitaciones. Para una experiencia completa, consigue tu propio token gratuito en [Mapbox](https://mapbox.com) y reemplázalo en el componente MapboxWorldMap.
