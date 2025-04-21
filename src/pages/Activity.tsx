@@ -170,7 +170,7 @@ export default function Activity() {
                 <div className="space-y-4">
                   <div className="space-y-2">
                     <div className="flex justify-between">
-                      <span className="text-sm font-medium">Duración < 1 minuto</span>
+                      <span className="text-sm font-medium">Duración {'<'} 1 minuto</span>
                       <span className="text-sm text-muted-foreground">28%</span>
                     </div>
                     <div className="h-2 bg-muted rounded-full overflow-hidden">
@@ -200,7 +200,7 @@ export default function Activity() {
                   
                   <div className="space-y-2">
                     <div className="flex justify-between">
-                      <span className="text-sm font-medium">> 10 minutos</span>
+                      <span className="text-sm font-medium">{'>'}10 minutos</span>
                       <span className="text-sm text-muted-foreground">12%</span>
                     </div>
                     <div className="h-2 bg-muted rounded-full overflow-hidden">

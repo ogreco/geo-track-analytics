@@ -199,7 +199,7 @@ export default function Providers() {
                 <div>
                   <h3 className="text-lg font-medium">Rendimiento ISP</h3>
                   <p className="text-sm text-muted-foreground mt-1">
-                    Los visitantes que acceden desde proveedores con mayor velocidad (>200 Mbps) muestran un tiempo de permanencia 
+                    Los visitantes que acceden desde proveedores con mayor velocidad ({'>'}200 Mbps) muestran un tiempo de permanencia 
                     18% mayor y una tasa de conversión 3.5% superior a los que acceden desde conexiones más lentas.
                   </p>
                 </div>
