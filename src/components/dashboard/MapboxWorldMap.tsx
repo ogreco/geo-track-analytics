@@ -29,7 +29,7 @@ export default function MapboxWorldMap({ visitorData = [], className = "" }: Map
   const [tokenInput, setTokenInput] = useState<string>(localStorage.getItem('mapbox_token') || DEFAULT_TOKEN);
   const [token, setToken] = useState<string>(localStorage.getItem('mapbox_token') || DEFAULT_TOKEN);
   const [mapInitialized, setMapInitialized] = useState<boolean>(false);
-  const [showTokenInput, setShowTokenInput] = useState<boolean>(false);
+  const [showTokenInput, setShowTokenInput] = useState<boolean>(true); // Start with token input visible
   const { toast } = useToast();
   
   const saveToken = () => {
@@ -123,7 +123,11 @@ export default function MapboxWorldMap({ visitorData = [], className = "" }: Map
       // Catch and handle map errors
       map.current.on('error', (e) => {
         console.error('Mapbox error:', e);
-        if (e.error && e.error.status === 401) {
+        // Fix the TypeScript error by checking if error is an object with status property
+        const error = e.error || {};
+        const status = typeof error === 'object' && error !== null && 'status' in error ? error.status : null;
+        
+        if (status === 401) {
           toast({
             title: "Error del mapa",
             description: "Token de Mapbox inválido. Por favor, introduce un token válido.",
@@ -158,11 +162,9 @@ export default function MapboxWorldMap({ visitorData = [], className = "" }: Map
       </CardHeader>
       <CardContent>
         {(showTokenInput || !mapInitialized) && (
-          <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-md">
-            <p className="text-yellow-800 text-sm mb-2">
-              {!mapInitialized 
-                ? "Es necesario un token válido de Mapbox. Para obtener uno, regístrate en mapbox.com."
-                : "El token de Mapbox actual parece ser inválido. Por favor, introduce uno nuevo:"}
+          <div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-md">
+            <p className="text-yellow-800 text-sm mb-3 font-medium">
+              Es necesario un token válido de Mapbox. Para obtener uno, regístrate en <a href="https://mapbox.com" target="_blank" rel="noopener noreferrer" className="underline">mapbox.com</a>
             </p>
             <div className="flex gap-2">
               <Input 
@@ -173,6 +175,9 @@ export default function MapboxWorldMap({ visitorData = [], className = "" }: Map
               />
               <Button onClick={saveToken} size="sm">Guardar</Button>
             </div>
+            <p className="text-xs text-yellow-700 mt-2">
+              El token debe empezar con "pk." y es tu clave pública de Mapbox
+            </p>
           </div>
         )}
         
@@ -184,7 +189,7 @@ export default function MapboxWorldMap({ visitorData = [], className = "" }: Map
               !mapInitialized && "bg-analytics-softBlue/30"
             )}
           >
-            {!mapInitialized && (
+            {!mapInitialized && !showTokenInput && (
               <div className="absolute inset-0 flex items-center justify-center text-muted-foreground">
                 <p>Cargando mapa...</p>
               </div>
