@@ -4,8 +4,31 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BarChart from "@/components/dashboard/BarChart";
 import StatCard from "@/components/dashboard/StatCard";
 import MapboxWorldMap from "@/components/dashboard/MapboxWorldMap";
-import { geoData, visitorInfo } from "@/data/mockData";
+import { visitorInfo } from "@/data/mockData";
 import { Users, Globe, Clock, Activity } from "lucide-react";
+
+// Extended geo data with regions and cities
+const extendedGeoData = [
+  { country: "España", region: "Cataluña", city: "Barcelona", count: 320, lat: 41.3851, lng: 2.1734 },
+  { country: "España", region: "Madrid", city: "Madrid", count: 260, lat: 40.4168, lng: -3.7038 },
+  { country: "Estados Unidos", region: "California", city: "San Francisco", count: 210, lat: 37.7749, lng: -122.4194 },
+  { country: "Estados Unidos", region: "Nueva York", city: "Nueva York", count: 210, lat: 40.7128, lng: -74.0060 },
+  { country: "México", region: "Ciudad de México", city: "CDMX", count: 180, lat: 19.4326, lng: -99.1332 },
+  { country: "México", region: "Jalisco", city: "Guadalajara", count: 170, lat: 20.6597, lng: -103.3496 },
+  { country: "Argentina", region: "Buenos Aires", city: "Buenos Aires", count: 160, lat: -34.6037, lng: -58.3816 },
+  { country: "Argentina", region: "Córdoba", city: "Córdoba", count: 120, lat: -31.4201, lng: -64.1888 },
+  { country: "Brasil", region: "São Paulo", city: "São Paulo", count: 140, lat: -23.5505, lng: -46.6333 },
+  { country: "Brasil", region: "Rio de Janeiro", city: "Rio de Janeiro", count: 100, lat: -22.9068, lng: -43.1729 },
+];
+
+// Group data by country
+const countryData = extendedGeoData.reduce((acc, item) => {
+  if (!acc[item.country]) {
+    acc[item.country] = { country: item.country, count: 0, lat: item.lat, lng: item.lng };
+  }
+  acc[item.country].count += item.count;
+  return acc;
+}, {});
 
 export default function Visitors() {
   return (
@@ -28,7 +51,7 @@ export default function Visitors() {
         />
         <StatCard
           title="Países"
-          value={geoData.length}
+          value={Object.keys(countryData).length}
           icon={<Globe size={20} />}
           description="Distintos países"
         />
@@ -61,7 +84,7 @@ export default function Visitors() {
           <Card>
             <CardContent className="pt-6">
               <h3 className="text-lg font-medium mb-4">Distribución global de visitantes</h3>
-              <MapboxWorldMap visitorData={geoData} />
+              <MapboxWorldMap visitorData={extendedGeoData} />
             </CardContent>
           </Card>
         </TabsContent>
@@ -71,7 +94,7 @@ export default function Visitors() {
             <CardContent className="pt-6">
               <BarChart
                 title="Top Países por Visitas"
-                data={geoData}
+                data={Object.values(countryData)}
                 dataKey="count"
                 categoryKey="country"
               />

@@ -4,6 +4,9 @@ import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
 
 interface MapboxWorldMapProps {
   visitorData?: Array<{
@@ -11,24 +14,48 @@ interface MapboxWorldMapProps {
     count: number;
     lat: number;
     lng: number;
+    region?: string;
+    city?: string;
   }>;
   className?: string;
 }
 
-const MAPBOX_TOKEN = 'pk.eyJ1IjoiZGVtby1hY2NvdW50IiwiYSI6ImNsbnh3aHljbDAwenQ2am85eHVpdjBsdTkifQ.dlLwyXHUwwPEgCemeXY41A'; // Nota: Este es un token público de demostración
+// Default token (for demo purposes only)
+const DEFAULT_TOKEN = 'pk.eyJ1IjoiZGVtby1hY2NvdW50IiwiYSI6ImNsbnh3aHljbDAwenQ2am85eHVpdjBsdTkifQ.dlLwyXHUwwPEgCemeXY41A';
 
 export default function MapboxWorldMap({ visitorData = [], className = "" }: MapboxWorldMapProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
-  const [tokenInput, setTokenInput] = useState<string>(MAPBOX_TOKEN);
+  const [tokenInput, setTokenInput] = useState<string>(localStorage.getItem('mapbox_token') || DEFAULT_TOKEN);
+  const [token, setToken] = useState<string>(localStorage.getItem('mapbox_token') || DEFAULT_TOKEN);
   const [mapInitialized, setMapInitialized] = useState<boolean>(false);
+  const [showTokenInput, setShowTokenInput] = useState<boolean>(false);
+  const { toast } = useToast();
+  
+  const saveToken = () => {
+    localStorage.setItem('mapbox_token', tokenInput);
+    setToken(tokenInput);
+    setShowTokenInput(false);
+    toast({
+      title: "Token guardado",
+      description: "El token de Mapbox ha sido guardado correctamente.",
+    });
+    
+    // Reinitialize map with new token
+    if (map.current) {
+      map.current.remove();
+      map.current = null;
+    }
+    setMapInitialized(false);
+    initializeMap();
+  };
 
   const initializeMap = () => {
-    if (!mapContainer.current || !tokenInput) return;
+    if (!mapContainer.current) return;
     
     try {
       // Initialize map
-      mapboxgl.accessToken = tokenInput;
+      mapboxgl.accessToken = token;
       
       if (map.current) return;
       
@@ -71,26 +98,47 @@ export default function MapboxWorldMap({ visitorData = [], className = "" }: Map
             markerEl.style.backgroundColor = 'rgba(14, 165, 233, 0.7)';
             markerEl.style.border = '2px solid rgba(255, 255, 255, 0.7)';
             
+            // Prepare popup content with region and city if available
+            let popupContent = `<strong>${visitor.country}</strong><br>${visitor.count} visitantes`;
+            if (visitor.region) {
+              popupContent += `<br>Región: ${visitor.region}`;
+            }
+            if (visitor.city) {
+              popupContent += `<br>Ciudad: ${visitor.city}`;
+            }
+            
             // Add the marker to the map
             new mapboxgl.Marker({ element: markerEl })
               .setLngLat([visitor.lng, visitor.lat])
               .setPopup(
-                new mapboxgl.Popup({ offset: 25 }).setHTML(
-                  `<strong>${visitor.country}</strong><br>${visitor.count} visitantes`
-                )
+                new mapboxgl.Popup({ offset: 25 }).setHTML(popupContent)
               )
               .addTo(map.current!);
           });
         }
+        
+        setMapInitialized(true);
       });
-
-      setMapInitialized(true);
+      
+      // Catch and handle map errors
+      map.current.on('error', (e) => {
+        console.error('Mapbox error:', e);
+        if (e.error && e.error.status === 401) {
+          toast({
+            title: "Error del mapa",
+            description: "Token de Mapbox inválido. Por favor, introduce un token válido.",
+            variant: "destructive"
+          });
+          setShowTokenInput(true);
+        }
+      });
     } catch (error) {
       console.error('Error initializing map:', error);
+      setShowTokenInput(true);
     }
   };
 
-  // Initialize map when component mounts
+  // Initialize map when component mounts or token changes
   useEffect(() => {
     initializeMap();
     
@@ -101,7 +149,7 @@ export default function MapboxWorldMap({ visitorData = [], className = "" }: Map
         map.current = null;
       }
     };
-  }, [tokenInput]);
+  }, [token, visitorData]);
 
   return (
     <Card className={className}>
@@ -109,11 +157,22 @@ export default function MapboxWorldMap({ visitorData = [], className = "" }: Map
         <CardTitle className="text-md font-medium">Distribución Geográfica</CardTitle>
       </CardHeader>
       <CardContent>
-        {!mapInitialized && (
+        {(showTokenInput || !mapInitialized) && (
           <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-md">
-            <p className="text-yellow-800 text-sm">
-              Este es un token de mapbox de demostración con limitaciones. Para una experiencia completa, usa tu propio token.
+            <p className="text-yellow-800 text-sm mb-2">
+              {!mapInitialized 
+                ? "Es necesario un token válido de Mapbox. Para obtener uno, regístrate en mapbox.com."
+                : "El token de Mapbox actual parece ser inválido. Por favor, introduce uno nuevo:"}
             </p>
+            <div className="flex gap-2">
+              <Input 
+                value={tokenInput}
+                onChange={(e) => setTokenInput(e.target.value)}
+                placeholder="Introduce tu token de Mapbox"
+                className="flex-1"
+              />
+              <Button onClick={saveToken} size="sm">Guardar</Button>
+            </div>
           </div>
         )}
         
