@@ -1,8 +1,8 @@
+
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BarChart from "@/components/dashboard/BarChart";
 import StatCard from "@/components/dashboard/StatCard";
-import MapboxWorldMap from "@/components/dashboard/MapboxWorldMap";
 import LeafletWorldMap from "@/components/dashboard/LeafletWorldMap";
 import { visitorInfo } from "@/data/mockData";
 import { Users, Globe, Clock, Activity } from "lucide-react";

@@ -5,7 +5,6 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Search, Filter, Download } from "lucide-react";
-import MapboxWorldMap from "@/components/dashboard/MapboxWorldMap";
 import BarChart from "@/components/dashboard/BarChart";
 import LeafletWorldMap from "@/components/dashboard/LeafletWorldMap";
 
