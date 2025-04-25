@@ -28,14 +28,14 @@ interface LeafletWorldMapProps {
 
 export default function LeafletWorldMap({ visitorData = [], className = "" }: LeafletWorldMapProps) {
   return (
-    <Card className={className}>
+    <Card className={cn(className)}>
       <CardHeader className="pb-2">
         <CardTitle className="text-md font-medium">Distribución Geográfica</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="h-[400px] rounded-md overflow-hidden border border-border">
           <MapContainer
-            center={[20, 0]}
+            center={[20, 0] as L.LatLngExpression}
             zoom={2}
             style={{ height: '100%', width: '100%' }}
             className="z-0"
@@ -47,7 +47,7 @@ export default function LeafletWorldMap({ visitorData = [], className = "" }: Le
             {visitorData.map((visitor, index) => (
               <Marker
                 key={`${visitor.lat}-${visitor.lng}-${index}`}
-                position={[visitor.lat, visitor.lng]}
+                position={[visitor.lat, visitor.lng] as L.LatLngExpression}
               >
                 <Popup>
                   <div className="p-1">

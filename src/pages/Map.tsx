@@ -4,8 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Search, Filter, Download } from "lucide-react";
-import BarChart from "@/components/dashboard/BarChart";
+import { Search } from "lucide-react";
 import LeafletWorldMap from "@/components/dashboard/LeafletWorldMap";
 
 const extendedGeoData = [
@@ -69,16 +68,9 @@ const groupDataByGranularity = (data: any[], granularity: string, search: string
 
 export default function MapPage() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [period, setPeriod] = useState("month");
   const [granularity, setGranularity] = useState("country");
   
   const filteredData = groupDataByGranularity(extendedGeoData, granularity, searchTerm);
-  
-  const getTopLocations = () => {
-    return [...filteredData]
-      .sort((a, b) => b.count - a.count)
-      .slice(0, 10);
-  };
   
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -89,13 +81,13 @@ export default function MapPage() {
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Mapa Geográfico</h1>
         <p className="text-muted-foreground mt-1">
-          Visualización geográfica de visitantes basada en datos de IP
+          Visualización geográfica de visitantes
         </p>
       </div>
       
       <Card>
         <CardContent className="pt-6">
-          <form onSubmit={handleSearch} className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <form onSubmit={handleSearch} className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <div>
               <Label htmlFor="search">Buscar</Label>
               <div className="flex mt-1">
@@ -109,24 +101,6 @@ export default function MapPage() {
                   <Search size={16} />
                 </Button>
               </div>
-            </div>
-            
-            <div>
-              <Label htmlFor="period">Periodo</Label>
-              <Select 
-                defaultValue={period} 
-                onValueChange={setPeriod}
-              >
-                <SelectTrigger id="period" className="mt-1">
-                  <SelectValue placeholder="Seleccionar periodo" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="week">Última semana</SelectItem>
-                  <SelectItem value="month">Último mes</SelectItem>
-                  <SelectItem value="quarter">Último trimestre</SelectItem>
-                  <SelectItem value="year">Último año</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
             
             <div>
@@ -147,26 +121,7 @@ export default function MapPage() {
             </div>
           </form>
           
-          <div className="flex justify-between items-center mb-4">
-            <Button variant="outline" size="sm" className="flex items-center gap-1">
-              <Filter size={16} />
-              <span>Filtros</span>
-            </Button>
-            
-            <Button variant="outline" size="sm" className="flex items-center gap-1">
-              <Download size={16} />
-              <span>Exportar</span>
-            </Button>
-          </div>
-          
-          <LeafletWorldMap visitorData={filteredData} className="mb-6" />
-          
-          <BarChart
-            title={`Top ${granularity === 'country' ? 'Países' : granularity === 'region' ? 'Regiones' : 'Ciudades'} por Visitas`}
-            data={getTopLocations()}
-            dataKey="count"
-            categoryKey={granularity === 'country' ? 'country' : granularity === 'region' ? 'region' : 'city'}
-          />
+          <LeafletWorldMap visitorData={filteredData} />
         </CardContent>
       </Card>
     </div>
