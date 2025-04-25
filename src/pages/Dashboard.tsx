@@ -1,8 +1,6 @@
-
 import { Globe, Users, Clock, PieChart as PieChartIcon, Activity, Server } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import StatCard from "@/components/dashboard/StatCard";
-import MapboxWorldMap from "@/components/dashboard/MapboxWorldMap";
 import BarChart from "@/components/dashboard/BarChart";
 import PieChart from "@/components/dashboard/PieChart";
 import LineChart from "@/components/dashboard/LineChart";
@@ -10,11 +8,12 @@ import {
   geoData, 
   connectionTypes, 
   ispData, 
-  visitsPerDay, 
+  visitsPerDay,
   pagesVisited,
   interactionData,
   visitorInfo
 } from "@/data/mockData";
+import LeafletWorldMap from "@/components/dashboard/LeafletWorldMap";
 
 export default function Dashboard() {
   return (
@@ -74,11 +73,11 @@ export default function Dashboard() {
               nameKey="name"
             />
           </div>
-          <MapboxWorldMap visitorData={geoData} />
+          <LeafletWorldMap visitorData={geoData} />
         </TabsContent>
         
         <TabsContent value="geography" className="space-y-4">
-          <MapboxWorldMap visitorData={geoData} />
+          <LeafletWorldMap visitorData={geoData} />
           <BarChart
             title="Top Países por Visitas"
             data={geoData}

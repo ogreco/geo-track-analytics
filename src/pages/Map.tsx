@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -8,8 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Search, Filter, Download } from "lucide-react";
 import MapboxWorldMap from "@/components/dashboard/MapboxWorldMap";
 import BarChart from "@/components/dashboard/BarChart";
+import LeafletWorldMap from "@/components/dashboard/LeafletWorldMap";
 
-// Extended geo data with regions and cities
 const extendedGeoData = [
   { country: "España", region: "Cataluña", city: "Barcelona", count: 320, lat: 41.3851, lng: 2.1734 },
   { country: "España", region: "Madrid", city: "Madrid", count: 260, lat: 40.4168, lng: -3.7038 },
@@ -29,11 +28,9 @@ const extendedGeoData = [
   { country: "Reino Unido", region: "Gran Londres", city: "Londres", count: 95, lat: 51.5074, lng: -0.1278 },
 ];
 
-// Group data by country, region, or city based on granularity
 const groupDataByGranularity = (data: any[], granularity: string, search: string = "") => {
   const searchLower = search.toLowerCase();
   
-  // Filter by search term if provided
   const filteredData = search 
     ? data.filter(item => 
         item.country.toLowerCase().includes(searchLower) || 
@@ -42,7 +39,6 @@ const groupDataByGranularity = (data: any[], granularity: string, search: string
     : data;
     
   if (granularity === 'country') {
-    // Group by country
     const countries = filteredData.reduce((acc, item) => {
       if (!acc[item.country]) {
         acc[item.country] = { country: item.country, count: 0, lat: item.lat, lng: item.lng };
@@ -52,7 +48,6 @@ const groupDataByGranularity = (data: any[], granularity: string, search: string
     }, {});
     return Object.values(countries);
   } else if (granularity === 'region') {
-    // Group by region
     const regions = filteredData.reduce((acc, item) => {
       const key = `${item.country}-${item.region}`;
       if (!acc[key]) {
@@ -69,7 +64,6 @@ const groupDataByGranularity = (data: any[], granularity: string, search: string
     }, {});
     return Object.values(regions);
   } else {
-    // City level (no grouping needed)
     return filteredData;
   }
 };
@@ -79,12 +73,9 @@ export default function MapPage() {
   const [period, setPeriod] = useState("month");
   const [granularity, setGranularity] = useState("country");
   
-  // Process data based on current filters
   const filteredData = groupDataByGranularity(extendedGeoData, granularity, searchTerm);
   
-  // Get top locations for the bar chart
   const getTopLocations = () => {
-    // Sort by count descending and take top 10
     return [...filteredData]
       .sort((a, b) => b.count - a.count)
       .slice(0, 10);
@@ -92,7 +83,6 @@ export default function MapPage() {
   
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // Search is already applied via state changes
   };
 
   return (
@@ -170,7 +160,7 @@ export default function MapPage() {
             </Button>
           </div>
           
-          <MapboxWorldMap visitorData={filteredData} className="mb-6" />
+          <LeafletWorldMap visitorData={filteredData} className="mb-6" />
           
           <BarChart
             title={`Top ${granularity === 'country' ? 'Países' : granularity === 'region' ? 'Regiones' : 'Ciudades'} por Visitas`}
