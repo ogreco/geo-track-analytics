@@ -1,4 +1,3 @@
-
 // Datos simulados para el dashboard
 export const geoData = [
   { country: "España", count: 580, lat: 40.4168, lng: -3.7038 },
@@ -84,3 +83,51 @@ export const visitorInfo = {
   bounceRate: "32.5%",
   conversionRate: "4.8%"
 };
+
+export const userStatsData = [
+  {
+    country: "Argentina",
+    activeUsers: 26,
+    newUsers: 11,
+    interactionSessions: 248,
+    interactionPercentage: 83.22,
+    sessionsPerUser: 9.54,
+    avgTimePerUser: "13 min y 17 s"
+  },
+  {
+    country: "Estados Unidos",
+    activeUsers: 12,
+    newUsers: 8,
+    interactionSessions: 8,
+    interactionPercentage: 66.67,
+    sessionsPerUser: 0.67,
+    avgTimePerUser: "1 s"
+  },
+  {
+    country: "China",
+    activeUsers: 5,
+    newUsers: 0,
+    interactionSessions: 0,
+    interactionPercentage: 0,
+    sessionsPerUser: 0,
+    avgTimePerUser: "0 s"
+  },
+  {
+    country: "Polonia",
+    activeUsers: 3,
+    newUsers: 3,
+    interactionSessions: 3,
+    interactionPercentage: 100,
+    sessionsPerUser: 1.00,
+    avgTimePerUser: "0 s"
+  },
+  {
+    country: "Seychelles",
+    activeUsers: 2,
+    newUsers: 2,
+    interactionSessions: 2,
+    interactionPercentage: 100,
+    sessionsPerUser: 1.00,
+    avgTimePerUser: "0 s"
+  }
+];

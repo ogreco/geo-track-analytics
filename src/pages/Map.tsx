@@ -6,6 +6,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 import LeafletWorldMap from "@/components/dashboard/LeafletWorldMap";
+import UserStatsTable from "@/components/dashboard/UserStatsTable";
+import { userStatsData } from "@/data/mockData";
 
 const extendedGeoData = [
   { country: "España", region: "Cataluña", city: "Barcelona", count: 320, lat: 41.3851, lng: 2.1734 },
@@ -81,7 +83,7 @@ export default function MapPage() {
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Mapa Geográfico</h1>
         <p className="text-muted-foreground mt-1">
-          Visualización geográfica de visitantes
+          Visualización geográfica de visitantes y estadísticas de uso
         </p>
       </div>
       
@@ -121,7 +123,10 @@ export default function MapPage() {
             </div>
           </form>
           
-          <LeafletWorldMap visitorData={filteredData} />
+          <div className="space-y-6">
+            <LeafletWorldMap visitorData={filteredData} />
+            <UserStatsTable data={userStatsData} />
+          </div>
         </CardContent>
       </Card>
     </div>
