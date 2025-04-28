@@ -1,18 +1,10 @@
 
-import React from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import React, { useMemo } from 'react';
+import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import L from 'leaflet';
-
-// Fix for default marker icons in Leaflet
-delete (L.Icon.Default.prototype as any)._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-});
+import type { LatLngExpression } from 'leaflet';
 
 interface LeafletWorldMapProps {
   visitorData?: Array<{
@@ -27,6 +19,24 @@ interface LeafletWorldMapProps {
 }
 
 export default function LeafletWorldMap({ visitorData = [], className = "" }: LeafletWorldMapProps) {
+  const maxVisits = useMemo(() => {
+    return Math.max(...visitorData.map(data => data.count));
+  }, [visitorData]);
+
+  const getColor = (count: number) => {
+    const intensity = (count / maxVisits);
+    if (intensity > 0.75) return "#7E69AB"; // Dark Purple
+    if (intensity > 0.5) return "#9b87f5";  // Primary Purple
+    if (intensity > 0.25) return "#D6BCFA"; // Light Purple
+    return "#E9D5FF";                       // Very Light Purple
+  };
+
+  const getRadius = (count: number) => {
+    const baseRadius = 8;
+    const scale = (count / maxVisits) * 2;
+    return baseRadius + (baseRadius * scale);
+  };
+
   return (
     <Card className={cn(className)}>
       <CardHeader className="pb-2">
@@ -35,22 +45,28 @@ export default function LeafletWorldMap({ visitorData = [], className = "" }: Le
       <CardContent>
         <div className="h-[400px] rounded-md overflow-hidden border border-border">
           <MapContainer
-            center={[20, 0] as L.LatLngExpression}
+            center={[20, 0] as LatLngExpression}
             zoom={2}
             style={{ height: '100%', width: '100%' }}
             className="z-0"
           >
             <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             />
             {visitorData.map((visitor, index) => (
-              <Marker
+              <CircleMarker
                 key={`${visitor.lat}-${visitor.lng}-${index}`}
-                position={[visitor.lat, visitor.lng] as L.LatLngExpression}
+                center={[visitor.lat, visitor.lng] as LatLngExpression}
+                radius={getRadius(visitor.count)}
+                fillColor={getColor(visitor.count)}
+                color={getColor(visitor.count)}
+                weight={1}
+                opacity={0.8}
+                fillOpacity={0.6}
               >
                 <Popup>
-                  <div className="p-1">
+                  <div className="p-2">
                     <strong>{visitor.country}</strong>
                     <br />
                     {visitor.count} visitantes
@@ -68,7 +84,7 @@ export default function LeafletWorldMap({ visitorData = [], className = "" }: Le
                     )}
                   </div>
                 </Popup>
-              </Marker>
+              </CircleMarker>
             ))}
           </MapContainer>
         </div>
